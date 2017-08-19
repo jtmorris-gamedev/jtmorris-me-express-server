@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
-var db = require(__dirname.substr(0,(__dirname.lastIndexOf("\\"))) + ("\\database\\index"));
-
+var dbObj = require(__dirname.substr(0,(__dirname.lastIndexOf("\\"))) + ("\\database\\index.js"));
+var db = dbObj[0];
+var conn = dbObj[1];
+var pageModel = require(__dirname.substr(0,(__dirname.lastIndexOf("\\"))) + ("\\database\\schemas\\pageSchema.js"));
 const axios = require('axios');
 const API = 'https://jsonplaceholder.typicode.com';
 
@@ -15,17 +17,26 @@ router.get('/', (req, res) => {
   res.send('api works');
 }).post('/', (req,res) =>{
 });
-router.get('/posts',(req,res) =>{
+router.get('/posts',(req,res,next) =>{
   axios.get(`${API}/posts`).then(posts =>{
     res.status(200).json(posts.data);
   })
   .catch(error =>{
     console.log(error);
     res.status(500).send(error)
-  });
+  }).next();
 });
+
+//route for navigation
 router.get('/nav',(req,res) =>{
   res.send('placeholder for nav json')
+});
+
+router.get("/pages/:attribute/:value",function(req,res){
+  var attribute = {};
+  attribute[req.query.attribute] = req.query.value;
+
+  res.send(200);
 });
 
 router.get("/projects",(req, res)=>{
@@ -36,12 +47,11 @@ router.get("/projects",(req, res)=>{
 
 })
 router.get("/projects/:projectDelim/",(req,res)=>{
-  pro
   if(req.params["projectDelim"] === typeof("")){
     console.log(req.params["projectDelim"] + "parameter is a string");
   }
   else console.log(typeof(req.params["projectDelim"]) + req.params["projectDelim"]);
   res.header("application/json").send(req.params);
 });
-router.ge
+
 module.exports = router;

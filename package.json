@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "nodemon"
   },
   "repository": {
     "type": "git",
@@ -16,5 +16,14 @@
   "bugs": {
     "url": "https://github.com/jtmorris-gamedev/jtmorris-me-express-server/issues"
   },
-  "homepage": "https://github.com/jtmorris-gamedev/jtmorris-me-express-server#readme"
+  "homepage": "https://github.com/jtmorris-gamedev/jtmorris-me-express-server#readme",
+  "dependencies": {
+    "axios": "^0.16.2",
+    "bcrypt-nodejs": "0.0.3",
+    "body-parser": "^1.17.2",
+    "express": "^4.15.4",
+    "mongoose": "^4.11.7",
+    "mongoose-connection-ready": "^1.0.1",
+    "nodemon": "^1.11.0"
+  }
 }

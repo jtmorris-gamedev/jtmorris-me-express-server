@@ -1,13 +1,13 @@
 // Get dependencies
 const express = require('express');
 const path = require('path');
-const fs = require('./server/filesystem/').file;
+const fs = require('./filesystem/').file;
 const http = require('http');
 const bodyParser = require('body-parser');
-const db = require("./server/database/");
+const db = require("./database/");
 
 // Get our API routes
-const api = require('./server/routes/api');
+const api = require('./routes/api');
 
 const app = express();
 
@@ -30,7 +30,7 @@ app.get('*', (req, res) => {
     res.sendFile(fileToFetch);
   }
   else{
-    res.sendFile(path.join(__dirname, 'dist/index.html'));
+    res.sendStatus(404);
   }
   
 });

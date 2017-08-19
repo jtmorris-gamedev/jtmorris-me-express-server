@@ -34,22 +34,24 @@ var pageSchema = new Schema({
         required:[true, "the file url is requred"],
         default:this.publicFileRoot + this.pageName
     },
-    webUrl:{
-        type:String
-    },
     pageID:{
         type:Number,
-        requred:[true,"pageID is required"]
+        index:true,
+        unique:true,
+        required:true
+    },
+    webUrl:{
+        type:String
     },
     lastUpdated:{type:Date, default:Date.now, required:[true, 'the last updated Date is required']},
     _mongoID: {type:Schema.Types.ObjectId, description:"mongoDB's Unique ID"},
     staticFiles:{
-        css:[{
+        css:{
             type:Array,
             url:{
                 type:String
             }
-        }],
+        },
         js:[{
             type:Array,
             url:{
@@ -73,4 +75,4 @@ var pageSchema = new Schema({
         }]
     }
 });
-module.exports = mongoose.model('pageSchema', pageSchema);
+module.exports = pageSchema;

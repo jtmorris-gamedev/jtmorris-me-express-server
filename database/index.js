@@ -1,105 +1,63 @@
 //setup the mongoose object
 var mongoose = require('mongoose');
+var connReady = require('mongoose-connection-ready');
 //import the database models
-var dbModels = require('./schemas');
-
-var pageModel = dbModels.pageModel;
-var projectmodel = dbModels.projectModel
+var projectSchema = require('./schemas/projectSchema');
+var pageSchema = require('./schemas/pageSchema');
 
 //Set up default mongoose connection with updated function and useMongoClient:true
 var mongoDB = 'mongodb://127.0.0.1/test';
-var db = mongoose.createConnection(mongoDB,{
-    useMongoClient:true
-});
+var mongoDBProtocol = "mongodb://"
+var mongoDBIP="127.0.0.1"
+var mongoDBName = "test"
+var mongoDBUser="admin"
+var mongoDBPassword = "GTx79^zwQ"
+var db = {};
+var mongoDBConnectionURIWithAuth = `mongodb://[${mongoDBUser}:${mongoDBPassword}]@${mongoDBIP}/${mongoDBName}`;
+var mongoDBConnectionURI = `mongodb://${mongoDBIP}/${mongoDBName}`;
+var conn = mongoose.createConnection(mongoDBConnectionURI,{useMongoClient:true})
+    .on('connected',function(){
+        console.log("connected to database");
+    });
+var pageModel = conn.model('PageModel',pageSchema);
+
+
+
 
 //Get the default connection
-var db = mongoose.connection;
+
 // import the list of valid attributes from attributes file. will be manually validated for now
-db.attributeList = require('./attributes');
-db.pageAttributes = db.attributeList.pages
+//db.attribList = require('./attributes');
+// set up database models
+
+//db.model('Page'); 
 
 
 
 
-//Bind connection to error event (to get notification of connection errors)
-db.on('error', console.error.bind(console, 'MongoDB connection error:'));
-db.on('success', console.debug.bind(console,"the connection was successful"));
 
 
-/*var sectionSchema = new Schema({
-    _ID:{
-        type:Schema.Types.ObjectId, required:[true,"the section's unique ID is required"]
-    },
-    title:{
-        type:String,
-        required:[true, "the Section's Title is Required. was given: +" + this.title]
-    },
-    intro:{
 
-    },
-    project:{
-        _ID:{
-            
-        }
-    }
-
-});
-*/
-
-/*pageModelInstance1 = new pageModel({
-    title:"Welcome To My Mean Stack app!",
-    pageName:"index",
-    pageExtension:"html",
-    webUrl:"/",
-    routeUri:"/",
-    staticFiles:{
-        html:[
-            this.fileUrl
-        ],
-        css:[
-            "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
-
-        ]
-    },
-    pageID:1
-
-}).update(function(err){
+var ReadCallback = function(err,doc,){
+    var result = {};
     if(err){
-        return console.log(err);
+        console.error.bind(console,err);
     }
     else{
-        console.log("creation Of page Model instance success");
+        return doc;
     }
-});
-*/
-db.get = function(attributeName, value, callback){
-    //check if the connection is valid
-    var result;
-    if(attributeName === undefined){
-         //for some reason attribute name is undefined.
-         throw new TypeError("database: on performing operation db.get() the argument attributeName was undefined. aborting!");
-         //throw an error and abort the operation
-    }
-    else{
-       if(value === undefined){
-            //if data is undefined assume user wants to query based on attribute only   
-            console.log("database:  on performing operation db.get("+attributeName+","+value+"), value was undefined. Attempting to query based on attribute only");
-            result = pageModel.where(attributeName);
-        }
-        else{
-            console.log("database: performing operation on database! db.get("+attributeName +","+value+")");
-            result = pageModel.where(attributeName,value);
-        }
-    }
-    //console.log(result);
 }
+//Bind connection to error event (to get notification of connection errors)
+//db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
-//test db.get 
-//db.get(db.attributeList.pageName,"index");
-db.getPageByName = function(type,pageName, callback){
 
-}
-db.checkIfExists = function(type, options, callback){
+db.checkIfExists = function(model ,attribName, value, callback){
+    
+    return new model.where(attribName)
+    .gt(value).exists(true);
+    console.log("result of checkIfExists:");
+    console.log(result)
+    return result;
 
 }
 db.update = function(type, options, callback){
@@ -108,16 +66,52 @@ db.update = function(type, options, callback){
 db.delete =function(type, options, callback){
 
 }
-db.create = function(type,options, callback){
+db.create = function(Model,options = {}, onSuccess = function(doc){}, onError = function(err){},onSave = function(err,Model){},onClose = function(){}){
+    //add authentication
+    //get required options from model
 
-}
-db.read = function(type, options, callback){
 
+    var newDocument = new Model(options);
+    validationError = newDocument.validateSync();
+    if(validationError){
+        console.log("on create: validation error:" + validationError);
+    }
+    else{
+    // if mongodb is ready and the connection is active and the information given is valid, and the user saving the information has been authenticated, then save
+        newDocument.save(function(err,newDocument){
+            if(err) return console.log(err);
+            else return newDocument;
+        });
+    }
 }
-db.switchDatabase = function(){
 
-}
 db.search = function(){
 
 }
-module.exports = {mongoose:mongoose,mongoDB:mongoDB,db:db,}
+var read = function(query, delimiterString, model = pageModel, res){
+    var findPages = function(res){
+        return function(err,data){
+            if(err){
+                console.log(err);
+                return;
+            }
+            console.log("my pages are in\n" + data );
+        }
+    }
+    if(query === undefined){
+        model.find({},findPages(res));
+    }
+    else {
+        model.findOne(query, delimiterString, findPages(res));
+    }
+    
+}
+db.read = read;
+console.log(read({"pageName":"index"},"pageName title lastUpdated"));
+
+
+//console.log(results[0] + new Date(Date.now()));
+
+
+//console.log(db.read(pageModel,"pageName","index").schema.tree);
+module.exports = [db,conn];
