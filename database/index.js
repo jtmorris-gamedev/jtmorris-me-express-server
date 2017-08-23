@@ -104,7 +104,7 @@ db.checkIfExists = function(model ,attribName, value, callback){
     return result;
 
 }
-db.update = function(type, options, callback){
+db.update = function(model, query, callback){
 
 }
 db.delete =function(Model, query, callback){
