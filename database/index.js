@@ -107,8 +107,15 @@ db.checkIfExists = function(model ,attribName, value, callback){
 db.update = function(type, options, callback){
 
 }
-db.delete =function(Model, primaryKey, callback){
-    Model.findByIdAndRemove(primaryKey,callback(err))
+db.delete =function(Model, query, callback){
+    if(query){
+         
+        Model.findbyIdAndRemove(primaryKey,callback(err))
+    }
+    else{
+        throw new Error("error on db.delete: primarykey is undefined");
+    }
+
 
 }
 db.create = function(Model,options = {}, onSuccess = function(doc){}, onError = function(err){},onSave = function(err,Model){},onClose = function(){}){
@@ -165,7 +172,7 @@ var findPages = function(error,data,res){
     }
 }
 
-
+db.read(pageModel,{},findPages);
 
 
 
