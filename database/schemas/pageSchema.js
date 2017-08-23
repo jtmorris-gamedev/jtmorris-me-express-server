@@ -19,8 +19,9 @@ var pageSchema = new Schema({
         type:String,
         required:[true ,'title is required']
     },
-    pageName:{
+    name:{
         type:String,
+
         required:[true, "the page name for this page is required"]
     },
     routeUri:{
@@ -33,12 +34,6 @@ var pageSchema = new Schema({
         type:String,
         required:[true, "the file url is requred"],
         default:this.publicFileRoot + this.pageName
-    },
-    pageID:{
-        type:Number,
-        index:true,
-        unique:true,
-        required:true
     },
     webUrl:{
         type:String

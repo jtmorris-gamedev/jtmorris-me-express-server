@@ -1,8 +1,6 @@
 const express = require('express');
 const router = express.Router();
-var dbObj = require(__dirname.substr(0,(__dirname.lastIndexOf("\\"))) + ("\\database\\index.js"));
-var db = dbObj[0];
-var conn = dbObj[1];
+var db = require(__dirname.substr(0,(__dirname.lastIndexOf("\\"))) + ("\\database\\index.js"));
 var pageModel = require(__dirname.substr(0,(__dirname.lastIndexOf("\\"))) + ("\\database\\schemas\\pageSchema.js"));
 const axios = require('axios');
 const API = 'https://jsonplaceholder.typicode.com';
@@ -33,10 +31,20 @@ router.get('/nav',(req,res) =>{
 });
 
 router.get("/pages/:attribute/:value",function(req,res){
-  var attribute = {};
-  attribute[req.query.attribute] = req.query.value;
+  var attribute = req.params.attribute
+  var value = req.params.value;
+  db.find(pageModel,{attribute:value},function(err,doc){
+    if(err){
+      console.log(err);
+      res.status(501).send(err);
+    }
+    else{
+      res.status(200).json(doc);
+    }
+ 
+  });
 
-  res.send(200);
+
 });
 
 router.get("/projects",(req, res)=>{
@@ -53,5 +61,6 @@ router.get("/projects/:projectDelim/",(req,res)=>{
   else console.log(typeof(req.params["projectDelim"]) + req.params["projectDelim"]);
   res.header("application/json").send(req.params);
 });
+
 
 module.exports = router;

@@ -107,8 +107,7 @@ db.checkIfExists = function(model ,attribName, value, callback){
 db.update = function(type, options, callback){
 
 }
-db.delete =function(Model, primaryKey, callback){
-    Model.findByIdAndRemove(primaryKey,callback(err))
+db.delete =function(type, options, callback){
 
 }
 db.create = function(Model,options = {}, onSuccess = function(doc){}, onError = function(err){},onSave = function(err,Model){},onClose = function(){}){
@@ -147,6 +146,12 @@ db.read = function(model, query, callback, delimiterString, ){
     else if(!callback ||  typeof(callback) !== 'function'){
         throw new Error("error while calling db.read. callback is undefined or not a function was given data of type:" +typeof(callback));
     
+    }
+    
+
+
+    if(query === undefined){
+        model.find({},callback());
     }
     else {
         model.findOne(query, delimiterString, callback(err,data));

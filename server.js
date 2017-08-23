@@ -44,9 +44,17 @@ app.set('port', port);
 /**
  * Create HTTP server.
  */
+
 const server = http.createServer(app);
 
 /**
  * Listen on provided port, on all network interfaces.
  */
 server.listen(port, () => console.log(`API running on localhost:${port}`));
+process.on('exit',function(){
+  db.closeConnection();
+})
+process.on('SIGNIT', function(){
+  console.log("control-c-pressed")
+  db.closeConnection();
+});
