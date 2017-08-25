@@ -6,10 +6,21 @@ const http = require('http');
 const bodyParser = require('body-parser');
 const db = require("./database/");
 
+//set app root:
+
+
+
 // Get our API routes
 const api = require('./routes/api');
 
 const app = express();
+
+app.dbRoot = __dirname + "/database";
+app.dbRoot.schemaRoot
+app.restApiRoot = __dirname + "/REST";
+app.appRoot = __dirname;
+
+
 
 // Parsers for POST data
 app.use(bodyParser.json());

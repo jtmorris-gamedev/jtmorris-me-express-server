@@ -155,6 +155,12 @@ var userSchema = new mongoose.Schema(
     }
 )
 
+userSchema.statics.getAllUsers = function getAllUsers (callback){
+    return this.model('user').find({},callback)
+}
+
+
+
 for(var attribute in userSchema.Schema.paths){
     userAttribs[attribute]=attribute.toString
 }
