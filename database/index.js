@@ -7,14 +7,6 @@ var projectSchema = require('./schemas/projectSchema');
 var pageSchema = require('./schemas/pageSchema');
 
 //Set up default mongoose connection with updated function and useMongoClient:true
-var mongoDB = 'mongodb://127.0.0.1/test';
-var mongoDBProtocol = "mongodb://"
-var mongoDBIP="127.0.0.1"
-var mongoDBName = "jtmorris-me"
-var mongoDBUser="admin"
-var mongoDBPassword = "GTx79^zwQ"
-var db = {};
-
 //create a base database object to assist with creating connections
 class Database{
     constructor(/*string*/ userName, password, dbName, dbModelName, dbSchema, authSource, hostAddress){
@@ -119,7 +111,6 @@ var conn = mongoose.createConnection(mongoDBConnectionURI,{useMongoClient:true})
     });
 
 
-var testDB2 = new Database("admin","GTx79^zwQ","test2","test2page",pageSchema);
 
 
 
