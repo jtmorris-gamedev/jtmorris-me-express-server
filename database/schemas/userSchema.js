@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
-var userAttribs ={
-};
+var bcrypt = require('bcrypt');
+
 var userSchema = new mongoose.Schema(
     {
         dateJoined:{
@@ -31,6 +31,7 @@ var userSchema = new mongoose.Schema(
             required:true
         },
         password:{
+            type:String,
             required:true
         },
         address:{
@@ -155,16 +156,49 @@ var userSchema = new mongoose.Schema(
     }
 )
 
+
+userSchema.schemaName = 'user';
+
+
+userSchema.statics.createUser = function createUser(userInfo){
+    //get user information
+        model = this.model(this.schemaName);
+
+    
+    //verify information is correct
+    //create the user
+
+
+
+
+
+    //return the user. 
+    
+}
+
+
+
+//var userModel = mongoose.model('user', userSChema) 
+
+
+
+userSchema.statics.defaultReadCallback = function defaultReadCallback(err,data){
+    this.model
+    return function(err,data){
+        if(err) console.log(err); 
+        console.log("heres the data:" +data)
+        return data;
+    }
+}
+
+
 userSchema.statics.getAllUsers = function getAllUsers (callback){
-    return this.model('user').find({},callback)
+    console.log("this.model=" +this.model);
 }
 
 
 
-for(var attribute in userSchema.Schema.paths){
-    userAttribs[attribute]=attribute.toString
-}
 
 
 
-module.exports = mongoose.model('userSchema', userSchema);
+module.exports = userSchema;

@@ -1,0 +1,1 @@
+const localAuth = require('passport')

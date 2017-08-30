@@ -19,7 +19,7 @@
   "homepage": "https://github.com/jtmorris-gamedev/jtmorris-me-express-server#readme",
   "dependencies": {
     "axios": "^0.16.2",
-    "bcrypt": "^1.0.2",
+    "bcrypt": "^1.0.3",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.17.2",
     "death": "^1.1.0",
@@ -28,6 +28,10 @@
     "mongoose-connection-ready": "^1.0.1",
     "nodemon": "^1.11.0",
     "passport": "^0.4.0",
+    "passport-facebook": "^2.1.1",
+    "passport-github": "^1.1.0",
+    "passport-google": "^0.3.0",
+    "passport-linkedin": "^1.0.0",
     "passport-local": "^1.0.0"
   }
 }

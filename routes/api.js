@@ -4,7 +4,7 @@ var db = require(__dirname.substr(0,(__dirname.lastIndexOf("\\"))) + ("\\databas
 var pageModel = require(__dirname.substr(0,(__dirname.lastIndexOf("\\"))) + ("\\database\\schemas\\pageSchema.js"));
 const axios = require('axios');
 const API = 'https://jsonplaceholder.typicode.com';
-
+const passport = require("./")
 
 
 
@@ -29,6 +29,24 @@ router.get('/posts',(req,res,next) =>{
 router.get('/nav',(req,res) =>{
   res.send('placeholder for nav json')
 });
+
+
+
+
+
+//routes for connecting/disconnecting from facebook
+router.get("/connect/facebook/auth",function(req,res,next){
+
+});
+router.get("/connect/facebook/callback",function(req,res,next){
+
+});
+router.get("/disconnect/facebook/",function(req,res,next){
+
+});
+
+
+
 
 router.get("/pages/:attribute/:value",function(req,res){
   var attribute = req.params.attribute
