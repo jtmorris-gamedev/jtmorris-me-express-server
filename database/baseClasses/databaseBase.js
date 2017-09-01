@@ -1,13 +1,12 @@
 "use strict";
 //setup the mongoose object
 var mongoose = require('mongoose');
-var connReady = require('mongoose-connection-ready');
-//import the database models
+
 
 //Set up default mongoose connection with updated function and useMongoClient:true
 //create a base database object to assist with creating connections
 module.exports= class Database{
-        constructor(/*string*/ userName, password, dbName, dbSchema, authSource, hostAddress){
+        constructor(/*string*/ userName, password, dbName, modelName, dbSchema, authSource, hostAddress){
             //import mongoose context for local use
             const mongoose = require('mongoose');
             if(typeof(userName) === "string"){
@@ -31,8 +30,8 @@ module.exports= class Database{
             if(typeof(dbSchema) === "object"){
                 this.schema = dbSchema;
                 if(typeof(dbName) ==="string"){
-                    this.modelName = dbName;
-                    this.model = mongoose.model(this.dbName, this.schema);
+                    this.modelName = modelName;
+                    this.model = mongoose.model(this.modelName, this.schema);
                 }
                 else{
                     throw new TypeError("error on creation of Database object: dbModelName Argument is " + typeof(dbModelName) + ". expected an Object" );
@@ -42,16 +41,27 @@ module.exports= class Database{
             else{
                 throw new TypeError("error on creation of Database object: dbSchema Argument is " + typeof(dbSchema) + ". expected an object" )
             }
+            
             //for the handler functions, the variables for accesssing user and database name are this.user (user) and this.name (database name) when called in the context of mongoose.model(...).on("event",handlerFunction()).
             this.onConnecting = this.onConnecting || function onConnecting(msg){
-                console.log(`making connection to database ${this.name} as user ${this.user}\nMongo message:${msg}`);
+
+                console.log(`making connection to database ${this.name} using model ${this.model.name} as user ${this.user}\nMongo message:${msg}`);
             }
             this.onConncected = this.onConncected || function onConnected(msg){
-                console.log(`connection made to database ${this.name} as user ${this.user}\nMongo message:${msg}`)
+                console.log(`connection made to database ${this.name} using model: ${modelName} as user:${this.user}\nMongo message:${msg}`)
             }
             
             this.onOpen = this.onOpen || function onOpen(msg){
-                console.log(`opened connection to ${this.name} as user ${this.user}\nMongo message:${msg}`);
+                var outputMsg = `opened connection to ${this.name} using model ${modelName} `
+                if(this.user){
+                    outputMsg+= `as ${this.user}`
+                }
+                if(msg){
+                    outputMsg+=`\nMongo message ${msg}`
+                }
+
+
+                console.log(outputMsg);
             }
             this.onDisconnecting = this.onDisconnecting || function onDisconnecting(msg){
                 console.log(`closing connection to database: ${this.name}\nMongo message:${msg}`);
@@ -76,6 +86,7 @@ module.exports= class Database{
             this.connection = this.connect(this.connectionUriNoAuth);
             this.connection.model(this.modelName);
         }
+
         connect(connectionUri){
             var connection = mongoose.createConnection(connectionUri)
             .on('connecting',this.onConnecting)

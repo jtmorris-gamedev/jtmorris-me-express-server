@@ -1,7 +1,6 @@
 var mongoose = require('mongoose');
-var Database = require('./databaseBase.js')
-var pageDB = "placeholder for page db"
-console.log(Database);
+var Database = require('./baseClasses/databaseBase.js')
+var pageDB = new Database("Admin","somePassword","jtmorris-me","pages",require("./schemas/").pageSchema);
 
 
 
